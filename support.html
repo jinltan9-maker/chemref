@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChemRef — Support</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #212529;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    h1 { font-size: 24px; margin-bottom: 4px; }
+    h2 { font-size: 18px; margin-top: 32px; }
+    .subtitle { color: #6c757d; font-size: 14px; margin-bottom: 32px; }
+    a { color: #2563eb; }
+    .faq-q { font-weight: 600; margin-top: 16px; }
+    .faq-a { margin-top: 4px; margin-bottom: 16px; }
+    .contact-box {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Support</h1>
+<div class="subtitle">ChemRef — Compound Tracker for Microsoft Word</div>
+
+<div class="contact-box">
+  <strong>Need help?</strong><br/>
+  Email <a href="mailto:jinltan9@gmail.com">jinltan9@gmail.com</a> with a description of the issue. Please include your version of Word (e.g., Word for Mac 16.x, Word for Web, Word 365 on Windows) and what you were doing when the issue occurred.
+</div>
+
+<h2>Frequently Asked Questions</h2>
+
+<div class="faq-q">How do I install ChemRef?</div>
+<div class="faq-a">In Microsoft Word, go to Insert → Get Add-ins (or My Add-ins) and search for "ChemRef." Click Add to install. The ChemRef panel will be available from the ribbon.</div>
+
+<div class="faq-q">Where is my compound data stored?</div>
+<div class="faq-a">All compound data is stored inside your Word document as a Custom XML Part. Nothing is sent to external servers. When you share the document, the compound dictionary travels with it.</div>
+
+<div class="faq-q">What happens if a collaborator doesn't have ChemRef installed?</div>
+<div class="faq-a">They'll see all compound names and codes as normal text in the document. They can read and edit the document normally. If they manually edit a compound reference, ChemRef will detect the change the next time someone opens the add-in (via the automatic consistency check).</div>
+
+<div class="faq-q">Can I use ChemRef on Mac or Word for Web?</div>
+<div class="faq-a">Yes. ChemRef is built as a web-based Office Add-in and works on Windows, Mac, and Word for Web.</div>
+
+<div class="faq-q">I accidentally deleted a compound reference. How do I fix it?</div>
+<div class="faq-a">Use the "Scan Unlinked" feature in the ChemRef panel. It will search your document for any text matching compound codes or names that aren't tracked by ChemRef, and let you re-link them with one click.</div>
+
+<div class="faq-q">How do I renumber compounds after a reviewer request?</div>
+<div class="faq-a">Click "Renumber" in the dictionary panel to enter renumbering mode. You can freely edit all codes and names without worrying about temporary conflicts. When you're done, click "Apply Renumbering" — ChemRef validates everything at once and updates all references in the document.</div>
+
+<div class="faq-q">What structure file formats are supported?</div>
+<div class="faq-a">ChemRef accepts any image format (PNG, JPG, SVG) for the visual structure key, and .cdx, .mol, .sdf, .mol2, .cml, .rxn, .rdf, .smiles, .smi, and .inchi files as optional attachments for verification.</div>
+
+<div class="faq-q">My document is getting large. What can I do?</div>
+<div class="faq-a">ChemRef compresses structure images on upload, but attached structure files (.cdx, .mol, .sdf) are stored at full size. If your document is growing large, consider removing structure file attachments for compounds where they're no longer needed — the structure images will remain as visual identifiers.</div>
+
+<div class="faq-q">How do I uninstall ChemRef?</div>
+<div class="faq-a">In Word, go to Insert → Get Add-ins (or My Add-ins), find ChemRef, and click Remove. Your compound data remains in the document as plain text and Custom XML — nothing is lost.</div>
+
+<h2>Known Limitations</h2>
+<p>Content controls can be inadvertently removed through cut-and-paste or find-and-replace operations. Use the "Scan Unlinked" feature regularly to detect and re-link any references that have lost their tracking. Track Changes markup may interfere with consistency checks — for best results, accept or reject tracked changes before running a consistency check.</p>
+
+</body>
+</html>

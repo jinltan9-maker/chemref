@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChemRef</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #fff; --bg-card: #f8f9fa; --bg-hover: #e9ecef; --border: #dee2e6;
+      --text: #212529; --text-muted: #6c757d; --primary: #2563eb; --primary-hover: #1d4ed8;
+      --danger: #dc2626; --danger-hover: #b91c1c; --success: #16a34a; --warning: #f59e0b;
+      --radius: 6px; --shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px; color: var(--text); background: var(--bg); line-height: 1.5; padding: 12px 12px 44px; }
+    h1 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+    h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+    button { font-family: inherit; font-size: 12px; cursor: pointer; border: none;
+      border-radius: var(--radius); padding: 6px 12px; font-weight: 500; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .bp { background: var(--primary); color: #fff; }
+    .bp:hover:not(:disabled) { background: var(--primary-hover); }
+    .bd { background: var(--danger); color: #fff; }
+    .bd:hover:not(:disabled) { background: var(--danger-hover); }
+    .bo { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .bo:hover:not(:disabled) { background: var(--bg-hover); }
+    .bs { padding: 4px 8px; font-size: 11px; }
+    .bw { width: 100%; }
+    input[type="text"], textarea { width: 100%; font-family: inherit; font-size: 13px;
+      padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius); outline: none; }
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,.15); }
+    textarea { resize: vertical; min-height: 40px; }
+    label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+    .field { margin-bottom: 12px; }
+    .err { color: var(--danger); font-size: 11px; margin-top: 3px; }
+    .hlp { color: var(--text-muted); font-size: 11px; margin-top: 3px; }
+    .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+    .tab { flex: 1; text-align: center; padding: 8px 4px; font-size: 12px; font-weight: 600;
+      color: var(--text-muted); background: none; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px; border-radius: 0; cursor: pointer; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px; margin-bottom: 8px; box-shadow: var(--shadow); }
+    .card:hover { border-color: var(--primary); }
+    .ch { display: flex; align-items: flex-start; gap: 10px; }
+    .ct { width: 56px; height: 56px; border-radius: 4px; border: 1px solid var(--border);
+      object-fit: contain; background: #fff; flex-shrink: 0; }
+    .cp { width: 56px; height: 56px; border-radius: 4px; border: 1px dashed var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--text-muted); background: #fff; flex-shrink: 0; }
+    .ci { flex: 1; min-width: 0; }
+    .ccode { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .cname { font-size: 12px; color: var(--text); word-break: break-word; }
+    .cmeta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    .ca { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+    .uz { border: 2px dashed var(--border); border-radius: var(--radius); padding: 16px;
+      text-align: center; cursor: pointer; background: var(--bg-card); }
+    .uz:hover { border-color: var(--primary); }
+    .uz:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,.15); }
+    .uz img { max-width: 100%; max-height: 160px; border-radius: 4px; }
+    .fc { display: inline-flex; align-items: center; gap: 4px; background: var(--bg-hover);
+      border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px 3px 8px; font-size: 11px; }
+    .fc .rm { cursor: pointer; font-size: 14px; color: var(--text-muted); line-height: 1; }
+    .fc .rm:hover { color: var(--danger); }
+    .io { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .iop { display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; background: var(--bg-card); }
+    .iop:hover { background: rgba(37,99,235,.05); border-color: var(--primary); }
+    .iol { font-weight: 600; font-size: 12px; }
+    .iov { font-size: 12px; color: var(--text-muted); }
+    .sb { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card);
+      border-top: 1px solid var(--border); padding: 6px 12px; font-size: 11px;
+      color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 6px 10px; }
+    .es { text-align: center; padding: 32px 16px; color: var(--text-muted); }
+    .es .ei { font-size: 36px; margin-bottom: 8px; }
+    .sr { position: relative; margin-bottom: 12px; }
+    .sr input { padding-left: 30px; }
+    .sr::before { content: "\1F50D"; position: absolute; left: 8px; top: 50%;
+      transform: translateY(-50%); font-size: 13px; }
+    .toast { position: fixed; top: 12px; left: 12px; right: 12px; padding: 8px 12px;
+      border-radius: var(--radius); font-size: 12px; color: #fff; z-index: 1000;
+      animation: sd .2s ease; }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--primary); }
+    .toast.warning { background: var(--warning); color: #78350f; }
+    @keyframes sd { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .badge { display: inline-block; background: var(--primary); color: #fff;
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+    .mo { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex;
+      align-items: center; justify-content: center; z-index: 999; }
+    .mdl { background: var(--bg); border-radius: 8px; padding: 20px; width: 90%;
+      max-width: 340px; box-shadow: 0 8px 30px rgba(0,0,0,.15); }
+    .mdl h2 { margin-bottom: 12px; }
+    .mda { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .mc { background: #fef2f2; border: 1px solid #fca5a5; border-radius: var(--radius);
+      padding: 10px; margin-bottom: 8px; }
+    .mc.orp { background: #fefce8; border-color: #fde68a; }
+    .ml { font-size: 11px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .3px; }
+    .mv { font-size: 13px; font-family: "SF Mono","Consolas", monospace; padding: 3px 6px;
+      border-radius: 3px; display: inline-block; margin-top: 2px; word-break: break-all; }
+    .me { background: #dcfce7; color: #166534; }
+    .ma { background: #fee2e2; color: #991b1b; }
+    .ib { background: none; border: 1px solid var(--border); border-radius: 50%;
+      width: 26px; height: 26px; font-size: 14px; color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; padding: 0; }
+    .ib:hover { background: var(--bg-hover); color: var(--text); }
+    .ip { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; margin-bottom: 16px; }
+    .ip h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .ip p { font-size: 12px; line-height: 1.6; }
+    .ip .im { font-size: 11px; color: var(--text-muted); margin-bottom: 12px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .ip .im a { color: var(--primary); text-decoration: none; }
+    .ip .im a:hover { text-decoration: underline; }
+    .isn { margin-bottom: 12px; }
+    .isn:last-child { margin-bottom: 0; }
+    .rs { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+      padding: 10px; margin-bottom: 12px; }
+    .rst { font-size: 12px; font-weight: 600; color: #1e40af; margin-bottom: 6px; }
+    .rsc { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+    .rsb { padding: 4px 10px; font-size: 11px; border-radius: var(--radius);
+      border: 1px solid #bfdbfe; background: #fff; color: #1e40af; cursor: pointer; }
+    .rsb:hover { background: #dbeafe; }
+    .rsb.act { background: var(--primary); color: #fff; border-color: var(--primary); cursor: default; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* Actions invoked from delegated #app click/input handlers (see onAppClick / onAppInput) */
+var CR = {};
+
+(function () {
+  var CUSTOM_XML_NS = "urn:chemref:compound-dictionary:v1";
+  var CC_TAG_PREFIX = "CHEMREF_";
+
+  /* True only for tags ChemRef creates (not other add-ins' content controls). */
+  function isChemRefContentControlTag(tag) {
+    if (!tag || tag.indexOf(CC_TAG_PREFIX) !== 0) return false;
+    var rest = tag.substr(CC_TAG_PREFIX.length);
+    var li = rest.lastIndexOf("_");
+    if (li < 0) return false;
+    var typ = rest.substr(li + 1);
+    return typ === "code" || typ === "name" || typ === "otherId";
+  }
+
+  var S = {
+    compounds: [],
+    activeTab: "list",
+    editingId: null,
+    searchQuery: "",
+    insertTarget: null,
+    toast: null,
+    formDraft: { code: "", name: "", otherId: "", imageDataUrl: null, attachments: [] },
+    formErrors: {},
+    initialized: false,
+    renumberMode: false,
+    renumberDrafts: {},
+    renumberErrors: {},
+    /* Extend sortCompoundComparator + CR.sort when adding modes (e.g. by name). */
+    sortMode: "code",
+    consistencyResults: null,
+    showConsistency: false,
+    startupMismatchCount: 0,
+    unlinkedResults: null,
+    showUnlinked: false,
+    storageWarningMB: null,
+    showInfo: false,
+    selectedRef: null,
+    pendingDeleteId: null,
+    pendingFlattenStep: null,
+    /* Word on the web only: insert plain space after new ChemRef control (easier to click after). */
+    webSpaceAfterInsert: false
+  };
+
+  /* ── Office Init ── */
+  Office.onReady(function (info) {
+    if (info.host === Office.HostType.Word) {
+      loadFromDoc().then(function () {
+        loadWebSpacePref();
+        S.initialized = true;
+        render();
+        if (S.compounds.length > 0) {
+          runConsistency(true).catch(function () {});
+        }
+      });
+    }
+  });
+
+  /* ── Persistence ── */
+  function loadFromDoc() {
+    return new Promise(function (res) {
+      try {
+        var json = Office.context.document.settings.get("chemref_compounds");
+        if (json) {
+          var parsed = JSON.parse(json);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            S.compounds = parsed;
+            res();
+            return;
+          }
+        }
+      } catch (e) { /* settings not available */ }
+      Word.run(function (ctx) {
+        var items = ctx.document.customXmlParts.getByNamespace(CUSTOM_XML_NS);
+        ctx.load(items);
+        return ctx.sync().then(function () {
+          if (items.items.length > 0) {
+            var xml = items.items[0].getXml();
+            return ctx.sync().then(function () {
+              var parsed = parseXml(xml.value);
+              if (parsed && parsed.length > 0) {
+                S.compounds = parsed;
+                return saveDoc();
+              }
+            });
+          }
+        });
+      }).then(res).catch(function () { res(); });
+    });
+  }
+
+  function saveDoc() {
+    return new Promise(function (res) {
+      try {
+        var settings = Office.context.document.settings;
+        settings.set("chemref_compounds", JSON.stringify(S.compounds));
+        settings.saveAsync(function () { res(); });
+      } catch (e) {
+        toast("Save failed.", "error");
+        res();
+      }
+    });
+  }
+
+  function parseXml(x) {
+    try {
+      var m = x.match(/<data>([\s\S]*?)<\/data>/);
+      if (!m) return null;
+      var s = m[1].replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+      return JSON.parse(s);
+    } catch (e) { return null; }
+  }
+
+  /* ── Word Document Operations ── */
+  /* Word for the web often ignores select() on a CC proxy from a prior sync; re-resolve by tag in a fresh Word.run. */
+  function selectAfterContentControl(ctx, cc) {
+    try {
+      var RL = Word.RangeLocation;
+      var afterLoc = RL ? RL.after : "After";
+      var afterR = cc.getRange(afterLoc);
+      var SM = Word.SelectionMode;
+      /* Collapsed "after" range: End matches SO/desktop behavior; Start for hosts that differ. */
+      if (SM && SM.end != null) {
+        afterR.select(SM.end);
+      } else {
+        afterR.select("End");
+      }
+    } catch (e) {
+      try {
+        var RL2 = Word.RangeLocation;
+        var afterLoc2 = RL2 ? RL2.after : "After";
+        var r2 = cc.getRange(afterLoc2);
+        var SM2 = Word.SelectionMode;
+        r2.select(SM2 && SM2.start != null ? SM2.start : "Start");
+      } catch (e2) { /* queue failed */ }
+    }
+    return ctx.sync().catch(function () { return Promise.resolve(); });
+  }
+
+  function findChemRefControlByTag(ctx, tag) {
+    var ccs = ctx.document.contentControls;
+    ccs.load("items");
+    return ctx.sync().then(function () {
+      for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag");
+      return ctx.sync();
+    }).then(function () {
+      for (var j = ccs.items.length - 1; j >= 0; j--) {
+        if (ccs.items[j].tag === tag) return ccs.items[j];
+      }
+      return null;
+    });
+  }
+
+  function shouldAppendSpaceAfterChemRefInsert() {
+    return isWordOnline() && S.webSpaceAfterInsert;
+  }
+
+  function positionCaretAfterChemRefTag(tag, addSpace) {
+    if (!tag) return Promise.resolve();
+    return Word.run(function (ctx) {
+      return findChemRefControlByTag(ctx, tag).then(function (cc) {
+        if (!cc) return Promise.resolve();
+        if (addSpace) {
+          try {
+            var RL = Word.RangeLocation;
+            var afterLoc = RL ? RL.after : "After";
+            var afterR = cc.getRange(afterLoc);
+            var IL = Word.InsertLocation;
+            afterR.insertText(" ", IL ? IL.start : "Start");
+          } catch (e) { /* optional */ }
+          return ctx.sync().then(function () {
+            return selectAfterContentControl(ctx, cc);
+          });
+        }
+        return selectAfterContentControl(ctx, cc);
+      });
+    }).catch(function () { return Promise.resolve(); });
+  }
+
+  /*
+   * Focus vs selection: Zotero and EndNote *desktop* use native Word integration (COM, .dotm / DLL, or similar),
+   * not Office.js task panes — they automate Word from outside the browser and can coordinate focus differently.
+   * EndNote *Word Online* uses an Office web add-in sidebar like ChemRef; their docs do not promise auto-focus
+   * back to the canvas. Office.js can move the document selection (range.select) but Microsoft still offers no
+   * supported way to shift *keyboard focus* from the task pane to the document (see OfficeDev/office-js #316, #4665).
+   */
+  function nudgeDocumentFocus() {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.focus();
+      }
+      window.blur();
+    } catch (e) { /* cross-origin */ }
+  }
+
+  function scheduleNudgeDocumentFocus() {
+    setTimeout(nudgeDocumentFocus, 0);
+    setTimeout(nudgeDocumentFocus, 80);
+  }
+
+  function isWordOnline() {
+    try {
+      var p = typeof Office !== "undefined" && Office.context && Office.context.platform;
+      if (p === "OfficeOnline") return true;
+      if (typeof Office !== "undefined" && Office.PlatformType && p === Office.PlatformType.OfficeOnline) return true;
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+
+  function loadWebSpacePref() {
+    if (!isWordOnline()) return;
+    try {
+      var v = Office.context.document.settings.get("chemref_web_space_after");
+      S.webSpaceAfterInsert = v === "1" || v === 1 || v === true || v === "true";
+    } catch (e) { /* ignore */ }
+  }
+
+  function persistWebSpacePref() {
+    if (!isWordOnline()) return;
+    try {
+      Office.context.document.settings.set("chemref_web_space_after", S.webSpaceAfterInsert ? "1" : "0");
+      Office.context.document.settings.saveAsync();
+    } catch (e) { /* ignore */ }
+  }
+
+  function wordWebTypingHint() {
+    if (!isWordOnline()) return "";
+    return " Click the document or press Ctrl+F6 to type there (Word on the web).";
+  }
+
+  function insertRef(cid, type) {
+    var c = fc(cid);
+    if (!c) return Promise.resolve();
+    var text = type === "code" ? c.code : type === "name" ? c.name : (c.otherId || "");
+    if (!text) { toast("No value set.", "error"); return Promise.resolve(); }
+    var tag = CC_TAG_PREFIX + cid + "_" + type;
+    return Word.run(function (ctx) {
+      var range = ctx.document.getSelection();
+      var cc = range.insertContentControl();
+      cc.tag = tag;
+      cc.title = "ChemRef: " + c.code + " (" + type + ")";
+      cc.appearance = "BoundingBox";
+      cc.cannotDelete = false;
+      cc.cannotEdit = false;
+      cc.color = "#2563eb";
+      cc.insertText(text, Word.InsertLocation.replace);
+      return ctx.sync();
+    }).then(function () {
+      return positionCaretAfterChemRefTag(tag, shouldAppendSpaceAfterChemRefInsert());
+    }).then(function () {
+      scheduleNudgeDocumentFocus();
+      toast("Inserted " + type + ": " + text + wordWebTypingHint(), "success");
+    }).catch(function () {
+      toast("Insert failed. Place cursor in document.", "error");
+    });
+  }
+
+  function updateRefs(cid) {
+    var c = fc(cid);
+    if (!c) return Promise.resolve();
+    return Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) {
+          ctx.load(ccs.items[i], "tag");
+        }
+        return ctx.sync();
+      }).then(function () {
+        var updated = 0;
+        for (var i = 0; i < ccs.items.length; i++) {
+          var cc = ccs.items[i];
+          if (cc.tag && cc.tag.indexOf(CC_TAG_PREFIX + cid + "_") === 0) {
+            var t = cc.tag.substr(cc.tag.lastIndexOf("_") + 1);
+            var nt = t === "code" ? c.code : t === "name" ? c.name : (c.otherId || "");
+            cc.insertText(nt, Word.InsertLocation.replace);
+            cc.title = "ChemRef: " + c.code + " (" + t + ")";
+            updated++;
+          }
+        }
+        return ctx.sync().then(function () {
+          if (updated > 0) toast(updated + " ref(s) updated.", "info");
+        });
+      });
+    }).catch(function () {});
+  }
+
+  function removeRefs(cid) {
+    return Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag");
+        return ctx.sync();
+      }).then(function () {
+        for (var i = 0; i < ccs.items.length; i++) {
+          if (ccs.items[i].tag && ccs.items[i].tag.indexOf(CC_TAG_PREFIX + cid + "_") === 0) {
+            ccs.items[i].cannotEdit = false;
+            ccs.items[i].delete(true);
+          }
+        }
+        return ctx.sync();
+      });
+    }).catch(function () {});
+  }
+
+  /* ── Validation ── */
+  function validate(code, name, oid, exId) {
+    var e = {};
+    var tc = code.trim(), tn = name.trim(), to = (oid || "").trim();
+    if (!tc) e.code = "Required.";
+    if (!tn) e.name = "Required.";
+    if (!S.renumberMode) {
+      if (tc && S.compounds.some(function (c) { return c.code.toLowerCase() === tc.toLowerCase() && c.id !== exId; }))
+        e.code = "Already used.";
+      if (tn && S.compounds.some(function (c) { return c.name.toLowerCase() === tn.toLowerCase() && c.id !== exId; }))
+        e.name = "Already used.";
+      if (to) {
+        if (S.compounds.some(function (c) { return (c.otherId || "").toLowerCase() === to.toLowerCase() && c.id !== exId; }))
+          e.otherId = "Already used.";
+        if (to.toLowerCase() !== tc.toLowerCase() && S.compounds.some(function (c) { return c.code.toLowerCase() === to.toLowerCase() && c.id !== exId; }))
+          e.otherId = "Matches another code.";
+      }
+    }
+    return e;
+  }
+
+  function batchVal() {
+    var errors = {}, bad = false;
+    var proj = S.compounds.map(function (c) {
+      var d = S.renumberDrafts[c.id];
+      return { id: c.id, code: (d ? d.code : c.code).trim(), name: (d ? d.name : c.name).trim(),
+        otherId: (d ? d.otherId : (c.otherId || "")).trim() };
+    });
+    proj.forEach(function (p) {
+      var e = {};
+      if (!p.code) { e.code = "Required."; bad = true; }
+      if (!p.name) { e.name = "Required."; bad = true; }
+      if (p.code && proj.some(function (x) { return x.id !== p.id && x.code.toLowerCase() === p.code.toLowerCase(); }))
+        { e.code = "Conflicts."; bad = true; }
+      if (p.name && proj.some(function (x) { return x.id !== p.id && x.name.toLowerCase() === p.name.toLowerCase(); }))
+        { e.name = "Conflicts."; bad = true; }
+      if (p.otherId) {
+        if (proj.some(function (x) { return x.id !== p.id && x.otherId.toLowerCase() === p.otherId.toLowerCase() && x.otherId; }))
+          { e.otherId = "Conflicts."; bad = true; }
+        if (p.otherId.toLowerCase() !== p.code.toLowerCase() && proj.some(function (x) { return x.id !== p.id && x.code.toLowerCase() === p.otherId.toLowerCase(); }))
+          { e.otherId = "Matches code."; bad = true; }
+      }
+      if (Object.keys(e).length > 0) errors[p.id] = e;
+    });
+    return { errors: errors, hasErrors: bad };
+  }
+
+  /* ── Consistency Check ── */
+  function runConsistency(silent) {
+    var mm = [];
+    return Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag,text");
+        return ctx.sync();
+      }).then(function () {
+        for (var i = 0; i < ccs.items.length; i++) {
+          var cc = ccs.items[i];
+          if (!cc.tag || cc.tag.indexOf(CC_TAG_PREFIX) !== 0) continue;
+          var rest = cc.tag.substr(CC_TAG_PREFIX.length);
+          var li = rest.lastIndexOf("_");
+          var cid = rest.substr(0, li);
+          var type = rest.substr(li + 1);
+          var comp = fc(cid);
+          if (!comp) {
+            mm.push({ ccTag: cc.tag, compoundId: cid, type: type, expected: null, actual: cc.text, orphaned: true });
+            continue;
+          }
+          var exp = type === "code" ? comp.code : type === "name" ? comp.name : (comp.otherId || "");
+          if (cc.text.trim() !== exp) {
+            mm.push({ ccTag: cc.tag, compoundId: cid, type: type, expected: exp,
+              actual: cc.text.trim(), orphaned: false, compoundCode: comp.code });
+          }
+        }
+      });
+    }).then(function () {
+      S.consistencyResults = mm;
+      if (mm.length > 0) {
+        S.showConsistency = true;
+        S.startupMismatchCount = mm.length;
+        if (!silent) toast(mm.length + " mismatch(es).", "warning");
+      } else {
+        S.startupMismatchCount = 0;
+        if (!silent) { S.showConsistency = true; toast("All consistent!", "success"); }
+      }
+      render();
+    }).catch(function () {
+      if (!silent) toast("Check failed.", "error");
+    });
+  }
+
+  function pullDoc(m) {
+    if (m.orphaned) return;
+    var c = fc(m.compoundId);
+    if (!c) return;
+    var v = m.actual;
+    if (m.type === "code") {
+      if (S.compounds.some(function (x) { return x.id !== c.id && x.code.toLowerCase() === v.toLowerCase(); })) {
+        toast("Conflicts.", "error"); return;
+      }
+      c.code = v;
+    } else if (m.type === "name") {
+      if (S.compounds.some(function (x) { return x.id !== c.id && x.name.toLowerCase() === v.toLowerCase(); })) {
+        toast("Conflicts.", "error"); return;
+      }
+      c.name = v;
+    } else {
+      c.otherId = v;
+    }
+    saveDoc().then(function () {
+      S.consistencyResults = S.consistencyResults.filter(function (x) { return x !== m; });
+      if (!S.consistencyResults.length) S.startupMismatchCount = 0;
+      toast("Pulled.", "success");
+      render();
+    });
+  }
+
+  function pushDoc(m) {
+    Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag");
+        return ctx.sync();
+      }).then(function () {
+        for (var i = 0; i < ccs.items.length; i++) {
+          if (ccs.items[i].tag === m.ccTag) ccs.items[i].insertText(m.expected, Word.InsertLocation.replace);
+        }
+        return ctx.sync();
+      });
+    }).then(function () {
+      S.consistencyResults = S.consistencyResults.filter(function (x) { return x !== m; });
+      if (!S.consistencyResults.length) S.startupMismatchCount = 0;
+      toast("Pushed.", "success");
+      render();
+    }).catch(function () { toast("Failed.", "error"); });
+  }
+
+  function pushAllDoc() {
+    var items = S.consistencyResults.filter(function (m) { return !m.orphaned && m.expected; });
+    if (!items.length) return;
+    Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag");
+        return ctx.sync();
+      }).then(function () {
+        var map = {};
+        items.forEach(function (m) { map[m.ccTag] = m.expected; });
+        for (var i = 0; i < ccs.items.length; i++) {
+          if (ccs.items[i].tag && map[ccs.items[i].tag])
+            ccs.items[i].insertText(map[ccs.items[i].tag], Word.InsertLocation.replace);
+        }
+        return ctx.sync();
+      });
+    }).then(function () {
+      S.consistencyResults = S.consistencyResults.filter(function (m) { return m.orphaned; });
+      if (!S.consistencyResults.length) S.startupMismatchCount = 0;
+      toast("All pushed.", "success");
+      render();
+    }).catch(function () { toast("Failed.", "error"); });
+  }
+
+  function rmOrph(m) {
+    Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag");
+        return ctx.sync();
+      }).then(function () {
+        for (var i = 0; i < ccs.items.length; i++) {
+          if (ccs.items[i].tag === m.ccTag) {
+            ccs.items[i].cannotEdit = false;
+            ccs.items[i].delete(true);
+          }
+        }
+        return ctx.sync();
+      });
+    }).then(function () {
+      S.consistencyResults = S.consistencyResults.filter(function (x) { return x !== m; });
+      if (!S.consistencyResults.length) S.startupMismatchCount = 0;
+      toast("Removed.", "info");
+      render();
+    }).catch(function () { toast("Failed.", "error"); });
+  }
+
+  /* ── Unlinked Scanner ── */
+  function scanUnlinked() {
+    var ul = [];
+    Word.run(function (ctx) {
+      var body = ctx.document.body;
+      return ctx.sync().then(function () {
+        var chain = Promise.resolve();
+        S.compounds.forEach(function (comp) {
+          var terms = [{ t: comp.code, y: "code" }, { t: comp.name, y: "name" }];
+          if (comp.otherId) terms.push({ t: comp.otherId, y: "otherId" });
+          terms.forEach(function (term) {
+            if (!term.t || term.t.length < 2) return;
+            chain = chain.then(function () {
+              var res = body.search(term.t, { matchCase: true, matchWholeWord: false });
+              res.load("items");
+              return ctx.sync().then(function () {
+                var ic = Promise.resolve();
+                for (var r = 0; r < res.items.length; r++) {
+                  (function (rng) {
+                    ic = ic.then(function () {
+                      var pcc = rng.parentContentControlOrNullObject;
+                      ctx.load(pcc, "tag,isNullObject");
+                      return ctx.sync().then(function () {
+                        if (pcc.isNullObject || !pcc.tag || pcc.tag.indexOf(CC_TAG_PREFIX) !== 0) {
+                          ul.push({
+                            text: term.t, type: term.y, compoundId: comp.id,
+                            compoundCode: comp.code, compoundName: comp.name,
+                            compoundOtherId: comp.otherId || ""
+                          });
+                        }
+                      });
+                    });
+                  })(res.items[r]);
+                }
+                return ic;
+              });
+            });
+          });
+        });
+        return chain;
+      });
+    }).then(function () {
+      S.unlinkedResults = ul;
+      S.showUnlinked = true;
+      if (!ul.length) toast("No unlinked!", "success");
+      else toast(ul.length + " unlinked.", "warning");
+      render();
+    }).catch(function () { toast("Scan failed.", "error"); });
+  }
+
+  function linkRef(item, cid, asType) {
+    var comp = fc(cid);
+    if (!comp) return;
+    var tag = CC_TAG_PREFIX + cid + "_" + asType;
+    var exp = asType === "code" ? comp.code : asType === "name" ? comp.name : (comp.otherId || "");
+    var didWrap = false;
+    Word.run(function (ctx) {
+      var res = ctx.document.body.search(item.text, { matchCase: true, matchWholeWord: false });
+      res.load("items");
+      return ctx.sync().then(function () {
+        var chain = Promise.resolve();
+        for (var i = 0; i < res.items.length; i++) {
+          (function (rng) {
+            chain = chain.then(function () {
+              var pcc = rng.parentContentControlOrNullObject;
+              ctx.load(pcc, "tag,isNullObject");
+              return ctx.sync().then(function () {
+                if (!pcc.isNullObject && pcc.tag && pcc.tag.indexOf(CC_TAG_PREFIX) === 0) return;
+                if (rng.text !== exp) rng.insertText(exp, Word.InsertLocation.replace);
+                return ctx.sync().then(function () {
+                  var cc = rng.insertContentControl();
+                  cc.tag = tag;
+                  cc.title = "ChemRef: " + comp.code + " (" + asType + ")";
+                  cc.appearance = "BoundingBox";
+                  cc.cannotDelete = false;
+                  cc.cannotEdit = false;
+                  cc.color = "#2563eb";
+                  return ctx.sync().then(function () {
+                    didWrap = true;
+                  });
+                });
+              });
+            });
+          })(res.items[i]);
+          break;
+        }
+        return chain;
+      });
+    }).then(function () {
+      if (!didWrap) return Promise.resolve();
+      return positionCaretAfterChemRefTag(tag, shouldAppendSpaceAfterChemRefInsert());
+    }).then(function () {
+      if (didWrap) scheduleNudgeDocumentFocus();
+      S.unlinkedResults = S.unlinkedResults.filter(function (u) { return u !== item; });
+      toast("Linked." + wordWebTypingHint(), "success");
+      render();
+    }).catch(function () { toast("Failed.", "error"); });
+  }
+
+  /* ── Detect & Switch Reference Type ── */
+  function detectSel() {
+    S.selectedRef = null;
+    Word.run(function (ctx) {
+      var sel = ctx.document.getSelection();
+      var pcc = sel.parentContentControlOrNullObject;
+      ctx.load(pcc, "id,tag,text,isNullObject");
+      return ctx.sync().then(function () {
+        if (pcc.isNullObject || !pcc.tag || pcc.tag.indexOf(CC_TAG_PREFIX) !== 0) return;
+        var rest = pcc.tag.substr(CC_TAG_PREFIX.length);
+        var li = rest.lastIndexOf("_");
+        var cid = rest.substr(0, li);
+        var type = rest.substr(li + 1);
+        var comp = fc(cid);
+        if (!comp) return;
+        S.selectedRef = {
+          ccId: pcc.id, ccTag: pcc.tag, compoundId: cid, type: type, text: pcc.text,
+          compoundCode: comp.code, compoundName: comp.name, compoundOtherId: comp.otherId || ""
+        };
+      });
+    }).then(function () {
+      if (!S.selectedRef) toast("No ChemRef ref at cursor.", "info");
+      render();
+    }).catch(function () { render(); });
+  }
+
+  function switchType(nt) {
+    if (!S.selectedRef) return;
+    var comp = fc(S.selectedRef.compoundId);
+    if (!comp) return;
+    var txt = nt === "code" ? comp.code : nt === "name" ? comp.name : (comp.otherId || "");
+    if (!txt) { toast("No value.", "error"); return; }
+    Word.run(function (ctx) {
+      var cc = ctx.document.contentControls.getByIdOrNullObject(Number(S.selectedRef.ccId));
+      ctx.load(cc, "id,tag,isNullObject");
+      return ctx.sync().then(function () {
+        if (cc.isNullObject) throw new Error("ChemRef control not found.");
+        cc.tag = CC_TAG_PREFIX + S.selectedRef.compoundId + "_" + nt;
+        cc.title = "ChemRef: " + comp.code + " (" + nt + ")";
+        cc.insertText(txt, Word.InsertLocation.replace);
+        return ctx.sync();
+      });
+    }).then(function () {
+      toast("Switched to " + nt + ".", "success");
+      S.selectedRef = null;
+      render();
+    }).catch(function () { toast("Failed.", "error"); });
+  }
+
+  /* ── Flatten (confirm via in-pane steps — window.confirm is unreliable in Office task panes) ── */
+  function executeFlatten() {
+    var cnt = 0;
+    Word.run(function (ctx) {
+      var ccs = ctx.document.contentControls;
+      ccs.load("items");
+      return ctx.sync().then(function () {
+        for (var i = 0; i < ccs.items.length; i++) ctx.load(ccs.items[i], "tag");
+        return ctx.sync();
+      }).then(function () {
+        /* Only unwrap controls ChemRef owns; never touch other programs' content controls. */
+        for (var i = 0; i < ccs.items.length; i++) {
+          if (isChemRefContentControlTag(ccs.items[i].tag)) {
+            ccs.items[i].cannotEdit = false;
+            ccs.items[i].cannotDelete = false;
+            ccs.items[i].delete(true);
+            cnt++;
+          }
+        }
+        return ctx.sync();
+      }).then(function () {
+        /* Only ChemRef's dictionary XML; settings key chemref_compounds is separate below. */
+        var xmlParts = ctx.document.customXmlParts.getByNamespace(CUSTOM_XML_NS);
+        ctx.load(xmlParts);
+        return ctx.sync().then(function () {
+          for (var xi = xmlParts.items.length - 1; xi >= 0; xi--) {
+            xmlParts.items[xi].delete();
+          }
+          return ctx.sync();
+        });
+      });
+    }).then(function () {
+      try {
+        var settings = Office.context.document.settings;
+        settings.remove("chemref_compounds");
+        return new Promise(function (r) { settings.saveAsync(function () { r(); }); });
+      } catch (e) { /* ok */ }
+    }).then(function () {
+      S.compounds = [];
+      S.consistencyResults = null;
+      S.showConsistency = false;
+      S.startupMismatchCount = 0;
+      S.unlinkedResults = null;
+      S.showUnlinked = false;
+      S.renumberMode = false;
+      S.activeTab = "list";
+      S.selectedRef = null;
+      toast("Unwrapped " + cnt + " ChemRef control(s); text kept in document.", "success");
+      render();
+    }).catch(function () { toast("Flatten failed.", "error"); });
+  }
+
+  /* ── Utilities ── */
+  function compressImg(du) {
+    return new Promise(function (res) {
+      var img = new Image();
+      img.onload = function () {
+        var w = img.width, h = img.height, md = 400;
+        if (w > md || h > md) { var r = Math.min(md / w, md / h); w = Math.round(w * r); h = Math.round(h * r); }
+        var cv = document.createElement("canvas");
+        cv.width = w; cv.height = h;
+        var c = cv.getContext("2d");
+        c.fillStyle = "#fff"; c.fillRect(0, 0, w, h); c.drawImage(img, 0, 0, w, h);
+        res(cv.toDataURL("image/jpeg", 0.7));
+      };
+      img.onerror = function () { res(du); };
+      img.src = du;
+    });
+  }
+
+  function checkStorage() {
+    var t = 0;
+    S.compounds.forEach(function (c) {
+      if (c.imageDataUrl) t += c.imageDataUrl.length;
+      if (c.attachments) c.attachments.forEach(function (a) { if (a.dataBase64) t += a.dataBase64.length; });
+    });
+    S.storageWarningMB = t / (1024 * 1024) > 5 ? (t / (1024 * 1024)).toFixed(1) : null;
+  }
+
+  function fc(id) {
+    for (var i = 0; i < S.compounds.length; i++) {
+      if (S.compounds[i].id === id) return S.compounds[i];
+    }
+    return null;
+  }
+
+  function gid() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).substr(2, 7); }
+
+  function toast(m, t) {
+    S.toast = { msg: m, type: t || "info" };
+    render();
+    setTimeout(function () { S.toast = null; render(); }, 3000);
+  }
+
+  function rdu(f) {
+    return new Promise(function (r) {
+      var x = new FileReader(); x.onload = function () { r(x.result); }; x.readAsDataURL(f);
+    });
+  }
+
+  function rb64(f) {
+    return new Promise(function (r) {
+      var x = new FileReader(); x.onload = function () { r(x.result.split(",")[1]); }; x.readAsDataURL(f);
+    });
+  }
+
+  function esc(s) {
+    return s ? s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : "";
+  }
+
+  function natcmp(a, b) {
+    var ax = [], bx = [];
+    a.replace(/(\d+)|(\D+)/g, function (_, d, s) { ax.push([d || 0, s || ""]); });
+    b.replace(/(\d+)|(\D+)/g, function (_, d, s) { bx.push([d || 0, s || ""]); });
+    for (var i = 0; i < Math.max(ax.length, bx.length); i++) {
+      var pa = ax[i] || [0, ""], pb = bx[i] || [0, ""];
+      var na = typeof pa[0] === "string" ? parseInt(pa[0], 10) : pa[0];
+      var nb = typeof pb[0] === "string" ? parseInt(pb[0], 10) : pb[0];
+      if (na !== nb) return na - nb;
+      var sa = (pa[1] || "").toLowerCase(), sb = (pb[1] || "").toLowerCase();
+      if (sa < sb) return -1;
+      if (sa > sb) return 1;
+    }
+    return 0;
+  }
+
+  function sortCompoundComparator(a, b) {
+    switch (S.sortMode) {
+      case "code":
+      default:
+        return natcmp(a.code, b.code);
+    }
+  }
+
+  function capForm() {
+    if (S.activeTab !== "add") return;
+    var c = document.getElementById("codeInput");
+    var n = document.getElementById("nameInput");
+    var o = document.getElementById("otherIdInput");
+    if (c) S.formDraft.code = c.value;
+    if (n) S.formDraft.name = n.value;
+    if (o) S.formDraft.otherId = o.value;
+  }
+
+  function dlAttach(a) {
+    var bc = atob(a.dataBase64);
+    var ba = new Uint8Array(bc.length);
+    for (var i = 0; i < bc.length; i++) ba[i] = bc.charCodeAt(i);
+    var b = new Blob([ba], { type: a.type });
+    var u = URL.createObjectURL(b);
+    var x = document.createElement("a");
+    x.href = u; x.download = a.name; x.click();
+    URL.revokeObjectURL(u);
+  }
+
+/* ── CR Global Handlers (invoked from onAppClick / onAppInput) ── */
+  CR.tab = function (t) {
+    if (t === "add" && S.activeTab !== "add") {
+      S.editingId = null;
+      S.formDraft = { code: "", name: "", otherId: "", imageDataUrl: null, attachments: [] };
+      S.formErrors = {};
+    }
+    S.activeTab = t;
+    render();
+  };
+  CR.info = function () { S.showInfo = !S.showInfo; render(); };
+  CR.sort = function (m) {
+    if (m === "code") {
+      S.sortMode = "code";
+      render();
+    }
+  };
+  CR.ins = function (id) { S.insertTarget = id; render(); };
+  CR.doIns = function (id, type) { S.insertTarget = null; render(); insertRef(id, type); };
+  CR.closeMod = function () { S.insertTarget = null; render(); };
+  CR.edit = function (id) {
+    var c = fc(id);
+    if (c) {
+      S.editingId = c.id;
+      S.formDraft = {
+        code: c.code, name: c.name, otherId: c.otherId || "",
+        imageDataUrl: c.imageDataUrl || null,
+        attachments: c.attachments ? c.attachments.slice() : []
+      };
+      S.formErrors = {};
+      S.activeTab = "add";
+      render();
+    }
+  };
+  CR.del = function (id) {
+    if (!fc(id)) return;
+    S.insertTarget = null;
+    S.pendingFlattenStep = null;
+    S.pendingDeleteId = id;
+    render();
+  };
+  CR.delConfirm = function () {
+    var id = S.pendingDeleteId;
+    if (!id || !fc(id)) {
+      S.pendingDeleteId = null;
+      render();
+      return;
+    }
+    S.pendingDeleteId = null;
+    removeRefs(id);
+    S.compounds = S.compounds.filter(function (c) { return c.id !== id; });
+    saveDoc();
+    toast("Deleted.", "info");
+    render();
+  };
+  CR.delCancel = function () {
+    S.pendingDeleteId = null;
+    render();
+  };
+  CR.dlFiles = function (id) {
+    var c = fc(id);
+    if (c && c.attachments) c.attachments.forEach(function (a) { dlAttach(a); });
+  };
+  CR.rmAttach = function (i) { S.formDraft.attachments.splice(i, 1); render(); };
+  CR.save = function () {
+    capForm();
+    var code = S.formDraft.code.trim();
+    var name = S.formDraft.name.trim();
+    var oid = (S.formDraft.otherId || "").trim();
+    var errs = validate(code, name, oid, S.editingId);
+    S.formErrors = errs;
+    if (Object.keys(errs).length > 0) { render(); return; }
+    if (S.editingId) {
+      var c = fc(S.editingId);
+      if (c) {
+        c.code = code; c.name = name; c.otherId = oid;
+        c.imageDataUrl = S.formDraft.imageDataUrl;
+        c.attachments = S.formDraft.attachments;
+      }
+      saveDoc().then(function () { return updateRefs(S.editingId); }).then(function () {
+        checkStorage();
+        toast("Updated.", "success");
+        S.editingId = null;
+        S.formDraft = { code: "", name: "", otherId: "", imageDataUrl: null, attachments: [] };
+        S.formErrors = {};
+        S.activeTab = "list";
+        render();
+      });
+    } else {
+      S.compounds.push({
+        id: gid(), code: code, name: name, otherId: oid,
+        imageDataUrl: S.formDraft.imageDataUrl,
+        attachments: S.formDraft.attachments,
+        createdAt: new Date().toISOString()
+      });
+      saveDoc().then(function () {
+        checkStorage();
+        toast("Added.", "success");
+        S.formDraft = { code: "", name: "", otherId: "", imageDataUrl: null, attachments: [] };
+        S.formErrors = {};
+        S.activeTab = "list";
+        render();
+      });
+    }
+  };
+  CR.cancel = function () {
+    S.editingId = null;
+    S.formDraft = { code: "", name: "", otherId: "", imageDataUrl: null, attachments: [] };
+    S.formErrors = {};
+    S.activeTab = "list";
+    render();
+  };
+  CR.attach = function () { var fi = document.getElementById("attachFileInput"); if (fi) fi.click(); };
+  CR.imgUp = function () { var fi = document.getElementById("imageFileInput"); if (fi) fi.click(); };
+  CR.enterRenum = function () {
+    S.renumberMode = true; S.renumberDrafts = {}; S.renumberErrors = {};
+    S.compounds.forEach(function (c) {
+      S.renumberDrafts[c.id] = { code: c.code, name: c.name, otherId: c.otherId || "" };
+    });
+    S.activeTab = "list";
+    render();
+  };
+  CR.commitRenum = function () {
+    var r = batchVal();
+    S.renumberErrors = r.errors;
+    if (r.hasErrors) { toast("Fix conflicts.", "error"); render(); return; }
+    var changed = [];
+    for (var id in S.renumberDrafts) {
+      var c = fc(id), d = S.renumberDrafts[id];
+      if (c && (c.code !== d.code.trim() || c.name !== d.name.trim() || (c.otherId || "") !== d.otherId.trim())) {
+        c.code = d.code.trim(); c.name = d.name.trim(); c.otherId = d.otherId.trim();
+        changed.push(id);
+      }
+    }
+    saveDoc().then(function () {
+      var ch = Promise.resolve();
+      changed.forEach(function (cid) { ch = ch.then(function () { return updateRefs(cid); }); });
+      return ch;
+    }).then(function () {
+      S.renumberMode = false; S.renumberDrafts = {}; S.renumberErrors = {};
+      toast(changed.length + " updated.", "success");
+      render();
+    });
+  };
+  CR.cancelRenum = function () {
+    S.renumberMode = false; S.renumberDrafts = {}; S.renumberErrors = {};
+    render();
+  };
+  CR.consistency = function () { runConsistency(); };
+  CR.scanUL = function () { scanUnlinked(); };
+  CR.flatten = function () {
+    S.insertTarget = null;
+    S.pendingDeleteId = null;
+    S.pendingFlattenStep = 1;
+    render();
+  };
+  CR.flattenCont = function () {
+    if (S.pendingFlattenStep === 1) {
+      S.pendingFlattenStep = 2;
+      render();
+    }
+  };
+  CR.flattenDo = function () {
+    if (S.pendingFlattenStep !== 2) return;
+    S.pendingFlattenStep = null;
+    executeFlatten();
+  };
+  CR.flattenCancel = function () {
+    S.pendingFlattenStep = null;
+    render();
+  };
+  CR.detectSel = function () { detectSel(); };
+  CR.clearSel = function () { S.selectedRef = null; render(); };
+  CR.switchType = function (t) { switchType(t); };
+  CR.consBanner = function () { S.activeTab = "consistency"; render(); };
+  CR.pullRef = function (i) {
+    if (S.consistencyResults && S.consistencyResults[i]) pullDoc(S.consistencyResults[i]);
+  };
+  CR.pushRef = function (i) {
+    if (S.consistencyResults && S.consistencyResults[i]) pushDoc(S.consistencyResults[i]);
+  };
+  CR.pushAll = function () { pushAllDoc(); };
+  CR.rmOrphan = function (i) {
+    if (S.consistencyResults && S.consistencyResults[i]) rmOrph(S.consistencyResults[i]);
+  };
+  CR.linkMatch = function (i) {
+    if (S.unlinkedResults && S.unlinkedResults[i]) {
+      var u = S.unlinkedResults[i];
+      linkRef(u, u.compoundId, u.type);
+    }
+  };
+  CR.linkCode = function (i) {
+    if (S.unlinkedResults && S.unlinkedResults[i])
+      linkRef(S.unlinkedResults[i], S.unlinkedResults[i].compoundId, "code");
+  };
+  CR.linkName = function (i) {
+    if (S.unlinkedResults && S.unlinkedResults[i])
+      linkRef(S.unlinkedResults[i], S.unlinkedResults[i].compoundId, "name");
+  };
+  CR.ignoreUL = function (i) {
+    if (S.unlinkedResults && S.unlinkedResults[i]) {
+      var item = S.unlinkedResults[i];
+      S.unlinkedResults = S.unlinkedResults.filter(function (x) { return x !== item; });
+      render();
+    }
+  };
+  CR.search = function (v) {
+    S.searchQuery = v;
+    render();
+    var el = document.getElementById("searchInput");
+    if (el) { el.focus(); el.selectionStart = el.selectionEnd = el.value.length; }
+  };
+  CR.renCode = function (id, v) {
+    if (!S.renumberDrafts[id]) S.renumberDrafts[id] = { code: "", name: "", otherId: "" };
+    S.renumberDrafts[id].code = v;
+    if (S.renumberErrors[id]) delete S.renumberErrors[id];
+  };
+  CR.renName = function (id, v) {
+    if (!S.renumberDrafts[id]) S.renumberDrafts[id] = { code: "", name: "", otherId: "" };
+    S.renumberDrafts[id].name = v;
+    if (S.renumberErrors[id]) delete S.renumberErrors[id];
+  };
+  CR.renOther = function (id, v) {
+    if (!S.renumberDrafts[id]) S.renumberDrafts[id] = { code: "", name: "", otherId: "" };
+    S.renumberDrafts[id].otherId = v;
+    if (S.renumberErrors[id]) delete S.renumberErrors[id];
+  };
+
+  /* Delegated events — inline onclick/oninput are blocked by Office task pane CSP */
+  function onAppClick(e) {
+    var root = document.getElementById("app");
+    if (!root || !root.contains(e.target)) return;
+
+    if (e.target.closest(".mo") && !e.target.closest(".mdl")) {
+      if (S.pendingDeleteId) CR.delCancel();
+      else if (S.pendingFlattenStep) CR.flattenCancel();
+      else if (S.insertTarget) CR.closeMod();
+      e.preventDefault();
+      return;
+    }
+
+    var node = e.target.closest("[data-cr]");
+    if (!node || !root.contains(node)) return;
+    if (node.tagName === "BUTTON" && node.disabled) return;
+
+    var act = node.getAttribute("data-cr");
+    var arg = node.getAttribute("data-arg");
+    var cid = node.getAttribute("data-cid");
+    var typ = node.getAttribute("data-type");
+    var idx = node.getAttribute("data-idx");
+    var i = idx !== null && idx !== "" ? parseInt(idx, 10) : NaN;
+
+    switch (act) {
+      case "info": CR.info(); break;
+      case "tab": CR.tab(arg); break;
+      case "commitrenum": CR.commitRenum(); break;
+      case "cancelrenum": CR.cancelRenum(); break;
+      case "consbanner": CR.consBanner(); break;
+      case "switchtype": CR.switchType(arg); break;
+      case "clearsel": CR.clearSel(); break;
+      case "detectsel": CR.detectSel(); break;
+      case "flatten": CR.flatten(); break;
+      case "flattencont": CR.flattenCont(); break;
+      case "flattendo": CR.flattenDo(); break;
+      case "flattencancel": CR.flattenCancel(); break;
+      case "closemod": CR.closeMod(); break;
+      case "doins": CR.doIns(cid, typ); break;
+      case "ins": CR.ins(cid); break;
+      case "edit": CR.edit(cid); break;
+      case "dlfiles": CR.dlFiles(cid); break;
+      case "del": CR.del(cid); break;
+      case "delconfirm": CR.delConfirm(); break;
+      case "delcancel": CR.delCancel(); break;
+      case "rmattach": if (!isNaN(i)) CR.rmAttach(i); break;
+      case "attach": CR.attach(); break;
+      case "save": CR.save(); break;
+      case "cancel": CR.cancel(); break;
+      case "consistency": CR.consistency(); break;
+      case "scanul": CR.scanUL(); break;
+      case "enterrenum": CR.enterRenum(); break;
+      case "sort": CR.sort(arg); break;
+      case "pushall": CR.pushAll(); break;
+      case "pullref": if (!isNaN(i)) CR.pullRef(i); break;
+      case "pushref": if (!isNaN(i)) CR.pushRef(i); break;
+      case "rmorphan": if (!isNaN(i)) CR.rmOrphan(i); break;
+      case "linkmatch": if (!isNaN(i)) CR.linkMatch(i); break;
+      case "linkcode": if (!isNaN(i)) CR.linkCode(i); break;
+      case "linkname": if (!isNaN(i)) CR.linkName(i); break;
+      case "ignoreul": if (!isNaN(i)) CR.ignoreUL(i); break;
+    }
+  }
+
+  function onAppChange(e) {
+    var root = document.getElementById("app");
+    if (!root || !root.contains(e.target)) return;
+    var t = e.target;
+    if (t.getAttribute("data-cr-webspace") === "1") {
+      S.webSpaceAfterInsert = !!t.checked;
+      persistWebSpacePref();
+      render();
+    }
+  }
+
+  function onAppInput(e) {
+    var root = document.getElementById("app");
+    if (!root || !root.contains(e.target)) return;
+    if (e.target.id === "searchInput") {
+      CR.search(e.target.value);
+      return;
+    }
+    var ren = e.target.getAttribute("data-cr-ren");
+    var rcid = e.target.getAttribute("data-cr-cid");
+    if (ren && rcid) {
+      if (ren === "code") CR.renCode(rcid, e.target.value);
+      else if (ren === "name") CR.renName(rcid, e.target.value);
+      else if (ren === "other") CR.renOther(rcid, e.target.value);
+    }
+  }
+
+  function onAppKeydown(e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var root = document.getElementById("app");
+    if (!root || !root.contains(e.target)) return;
+    var node = e.target.closest("[data-cr]");
+    if (!node || node.getAttribute("data-cr") !== "consbanner") return;
+    e.preventDefault();
+    CR.consBanner();
+  }
+
+  /* ── Render ── */
+  function render() {
+    capForm();
+    if (S.pendingDeleteId && !fc(S.pendingDeleteId)) S.pendingDeleteId = null;
+    var root = document.getElementById("app");
+    if (!root) return;
+    var h = "";
+
+    // Toast
+    if (S.toast) {
+      h += '<div class="toast ' + S.toast.type + '">' + esc(S.toast.msg) + '</div>';
+    }
+
+    // Header
+    h += '<div style="display:flex;align-items:flex-start;justify-content:space-between">';
+    h += '<div><h1>ChemRef</h1>';
+    h += '<div class="subtitle">Compound Tracker \u2014 ' + S.compounds.length + ' compound(s)</div></div>';
+    h += '<button type="button" class="ib" data-cr="info" title="About">\u24D8</button></div>';
+
+    // Info panel
+    if (S.showInfo) h += infoHTML();
+
+    // Tabs
+    h += '<div class="tabs">';
+    h += '<button type="button" class="tab' + (S.activeTab === "list" ? " active" : "") + '" data-cr="tab" data-arg="list">Dictionary';
+    if (S.compounds.length) h += ' <span class="badge">' + S.compounds.length + '</span>';
+    h += '</button>';
+    if (!S.renumberMode) {
+      h += '<button type="button" class="tab' + (S.activeTab === "add" ? " active" : "") + '" data-cr="tab" data-arg="add">';
+      h += S.editingId ? "Edit" : "\uFF0B Add New";
+      h += '</button>';
+    }
+    if (S.showConsistency) {
+      var mc = S.consistencyResults ? S.consistencyResults.length : 0;
+      h += '<button type="button" class="tab' + (S.activeTab === "consistency" ? " active" : "") + '" data-cr="tab" data-arg="consistency">Check';
+      if (mc) h += ' <span class="badge" style="background:var(--danger)">' + mc + '</span>';
+      h += '</button>';
+    }
+    if (S.showUnlinked) {
+      var uc = S.unlinkedResults ? S.unlinkedResults.length : 0;
+      h += '<button type="button" class="tab' + (S.activeTab === "unlinked" ? " active" : "") + '" data-cr="tab" data-arg="unlinked">Unlinked';
+      if (uc) h += ' <span class="badge" style="background:var(--warning);color:#78350f">' + uc + '</span>';
+      h += '</button>';
+    }
+    h += '</div>';
+
+    // Renumber banner
+    if (S.renumberMode) {
+      h += '<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:var(--radius);padding:10px;margin-bottom:12px">';
+      h += '<div style="font-weight:700;font-size:13px;color:#92400e">\u26A0 Renumbering Mode</div>';
+      h += '<div style="font-size:11px;color:#92400e;margin-top:2px">Edit freely \u2014 validated on apply.</div>';
+      h += '<div style="display:flex;gap:6px;margin-top:8px">';
+      h += '<button type="button" class="bp bs" data-cr="commitrenum">\u2713 Apply</button>';
+      h += '<button type="button" class="bo bs" data-cr="cancelrenum">Cancel</button></div></div>';
+    }
+
+    // Consistency banner
+    if (!S.renumberMode && S.startupMismatchCount > 0 && S.consistencyResults &&
+        S.consistencyResults.length > 0 && S.activeTab !== "consistency") {
+      h += '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:var(--radius);padding:10px;margin-bottom:12px;cursor:pointer" data-cr="consbanner" role="button" tabindex="0">';
+      h += '<div style="font-weight:700;font-size:13px;color:#991b1b">\u26A0 ' + S.consistencyResults.length + ' ref(s) edited outside ChemRef</div>';
+      h += '<div style="font-size:11px;color:#991b1b;margin-top:2px">Click to review.</div></div>';
+    }
+
+    // Storage warning
+    if (S.storageWarningMB) {
+      h += '<div style="background:#fff7ed;border:1px solid #fdba74;border-radius:var(--radius);padding:10px;margin-bottom:12px">';
+      h += '<div style="font-weight:700;font-size:13px;color:#9a3412">\uD83D\uDCE6 Large data (' + S.storageWarningMB + ' MB)</div>';
+      h += '<div style="font-size:11px;color:#9a3412;margin-top:2px">Consider removing file attachments.</div></div>';
+    }
+
+    // Reference switcher
+    if (S.selectedRef) {
+      var sr = S.selectedRef;
+      var tl = sr.type === "otherId" ? "Other ID" : sr.type === "name" ? "Name" : "Code";
+      h += '<div class="rs"><div class="rst">\uD83D\uDCCC Selected: ' + esc(sr.compoundCode) + '</div>';
+      h += '<div class="rsc">Showing: <strong>' + tl + '</strong> \u2014 "' + esc(sr.text) + '"</div>';
+      h += '<div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">Switch to:</div>';
+      h += '<div style="display:flex;gap:4px;flex-wrap:wrap">';
+      h += '<button type="button" class="rsb' + (sr.type === "code" ? " act" : "") + '" data-cr="switchtype" data-arg="code"' + (sr.type === "code" ? " disabled" : "") + '>Code: ' + esc(sr.compoundCode) + '</button>';
+      var nameDisplay = sr.compoundName.length > 30 ? sr.compoundName.substr(0, 30) + "\u2026" : sr.compoundName;
+      h += '<button type="button" class="rsb' + (sr.type === "name" ? " act" : "") + '" data-cr="switchtype" data-arg="name"' + (sr.type === "name" ? " disabled" : "") + '>Name: ' + esc(nameDisplay) + '</button>';
+      if (sr.compoundOtherId) {
+        h += '<button type="button" class="rsb' + (sr.type === "otherId" ? " act" : "") + '" data-cr="switchtype" data-arg="otherId"' + (sr.type === "otherId" ? " disabled" : "") + '>Other: ' + esc(sr.compoundOtherId) + '</button>';
+      }
+      h += '</div><div style="margin-top:6px"><button type="button" class="bo bs" data-cr="clearsel">Dismiss</button></div></div>';
+    }
+
+    // Switch reference type (cursor in ChemRef content control)
+    if (!S.renumberMode && S.compounds.length > 0 && !S.selectedRef) {
+      h += '<div style="margin-bottom:12px"><button type="button" class="bo bw" data-cr="detectsel" style="font-size:12px;line-height:1.35;white-space:normal;padding:8px 10px">\uD83D\uDCCC Switch selected reference to alternative identifier</button></div>';
+    }
+
+    // Tab content
+    if (S.activeTab === "list") h += listHTML();
+    else if (S.activeTab === "add") h += formHTML();
+    else if (S.activeTab === "consistency") h += consHTML();
+    else if (S.activeTab === "unlinked") h += ulHTML();
+
+    // Modals (in-pane — window.confirm is unreliable in Office task panes)
+    if (S.pendingDeleteId) h += deleteConfirmHTML();
+    else if (S.pendingFlattenStep) h += flattenConfirmHTML();
+    else if (S.insertTarget) h += modalHTML();
+
+    // Status bar
+    h += '<div class="sb"><span>ChemRef v1.0</span>';
+    h += '<span><button type="button" class="bo bs" data-cr="flatten" style="font-size:10px;line-height:1.25;white-space:normal;padding:4px 6px;max-width:160px;text-align:center">Flatten for manuscript submission</button></span>';
+    if (isWordOnline()) {
+      h += '<label style="font-size:10px;color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;user-select:none;max-width:280px;line-height:1.3">';
+      h += '<input type="checkbox" data-cr-webspace="1" ' + (S.webSpaceAfterInsert ? "checked" : "") + '/>';
+      h += 'Add space after insert (word-on-the-web)</label>';
+    }
+    h += '<span>' + S.compounds.length + ' cmpds</span></div>';
+
+    root.innerHTML = h;
+
+    // Bind non-click events (drag, paste, file inputs)
+    var imgZone = document.getElementById("imageUploadZone");
+    var imgInput = document.getElementById("imageFileInput");
+    if (imgZone) {
+      imgZone.ondragover = function (e) { e.preventDefault(); imgZone.style.borderColor = "var(--primary)"; };
+      imgZone.ondragleave = function () { imgZone.style.borderColor = ""; };
+      imgZone.ondrop = function (e) {
+        e.preventDefault(); imgZone.style.borderColor = "";
+        var f = e.dataTransfer.files[0];
+        if (f && f.type.indexOf("image/") === 0) {
+          rdu(f).then(compressImg).then(function (d) { S.formDraft.imageDataUrl = d; render(); });
+        }
+      };
+      imgZone.setAttribute("tabindex", "0");
+      imgZone.addEventListener("click", function () { imgZone.focus(); });
+      imgZone.addEventListener("dblclick", function (e) {
+        e.preventDefault();
+        CR.imgUp();
+      });
+      imgZone.addEventListener("paste", function (e) {
+        var items = e.clipboardData ? e.clipboardData.items : null;
+        if (!items) return;
+        for (var j = 0; j < items.length; j++) {
+          if (items[j].type.indexOf("image/") === 0) {
+            e.preventDefault();
+            var f = items[j].getAsFile();
+            if (f) rdu(f).then(compressImg).then(function (d) { S.formDraft.imageDataUrl = d; render(); });
+            break;
+          }
+        }
+      });
+    }
+    if (imgInput) {
+      imgInput.onchange = function () {
+        var f = imgInput.files[0];
+        if (f) rdu(f).then(compressImg).then(function (d) { S.formDraft.imageDataUrl = d; render(); });
+      };
+    }
+    var attIn = document.getElementById("attachFileInput");
+    if (attIn) {
+      attIn.onchange = function () {
+        var chain = Promise.resolve();
+        for (var j = 0; j < attIn.files.length; j++) {
+          (function (f) {
+            chain = chain.then(function () {
+              return rb64(f).then(function (b) {
+                S.formDraft.attachments.push({ name: f.name, type: f.type || "application/octet-stream", dataBase64: b });
+              });
+            });
+          })(attIn.files[j]);
+        }
+        chain.then(function () { render(); });
+      };
+    }
+  }
+
+  /* ── HTML Builders ── */
+  function listHTML() {
+    var h = "";
+    if (S.compounds.length > 3 && !S.renumberMode) {
+      h += '<div class="sr"><input type="text" id="searchInput" placeholder="Filter\u2026" value="' + esc(S.searchQuery) + '"/></div>';
+    }
+    if (!S.renumberMode && S.compounds.length >= 1) {
+      h += '<div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:8px;flex-wrap:wrap">';
+      if (S.compounds.length >= 2) h += '<button type="button" class="bo bs" data-cr="enterrenum">\uD83D\uDD04 Renumber</button>';
+      h += '<button type="button" class="bo bs" data-cr="consistency">\uD83D\uDD0D Consistency</button>';
+      h += '<button type="button" class="bo bs" data-cr="scanul">\uD83D\uDD17 Scan Unlinked</button></div>';
+    }
+    var filtered = S.compounds.filter(function (c) {
+      if (!S.searchQuery || S.renumberMode) return true;
+      var q = S.searchQuery.toLowerCase();
+      return c.code.toLowerCase().indexOf(q) >= 0 || c.name.toLowerCase().indexOf(q) >= 0;
+    });
+    var sorted = filtered.slice().sort(sortCompoundComparator);
+    if (!sorted.length) {
+      h += '<div class="es"><div class="ei">\uD83E\uDDEA</div><p>' + (S.compounds.length === 0 ? "No compounds yet." : "No matches.") + '</p></div>';
+    } else {
+      sorted.forEach(function (c) { h += S.renumberMode ? renCard(c) : compCard(c); });
+    }
+    return h;
+  }
+
+  function compCard(c) {
+    var thumb = c.imageDataUrl
+      ? '<img class="ct" src="' + c.imageDataUrl + '"/>'
+      : '<div class="cp">?</div>';
+    var ac = (c.attachments && c.attachments.length) || 0;
+    var meta = "Added " + new Date(c.createdAt).toLocaleDateString();
+    if (c.otherId) meta += " \u00B7 " + esc(c.otherId);
+    if (ac > 0) meta += " \u00B7 " + ac + " file(s)";
+    var h = '<div class="card"><div class="ch">' + thumb;
+    h += '<div class="ci"><div class="ccode">' + esc(c.code) + '</div>';
+    h += '<div class="cname">' + esc(c.name) + '</div>';
+    h += '<div class="cmeta">' + meta + '</div></div></div>';
+    h += '<div class="ca">';
+    h += '<button type="button" class="bp bs" data-cr="ins" data-cid="' + esc(c.id) + '">Insert \u25BE</button>';
+    h += '<button type="button" class="bo bs" data-cr="edit" data-cid="' + esc(c.id) + '">Edit</button>';
+    h += '<button type="button" class="bo bs" data-cr="dlfiles" data-cid="' + esc(c.id) + '"' + (ac === 0 ? " disabled" : "") + '>Files</button>';
+    h += '<button type="button" class="bd bs" data-cr="del" data-cid="' + esc(c.id) + '">Delete</button>';
+    h += '</div></div>';
+    return h;
+  }
+
+  function renCard(c) {
+    var d = S.renumberDrafts[c.id] || { code: c.code, name: c.name, otherId: c.otherId || "" };
+    var e = S.renumberErrors[c.id] || {};
+    var thumb = c.imageDataUrl ? '<img class="ct" src="' + c.imageDataUrl + '"/>' : '<div class="cp">?</div>';
+    var changed = d.code.trim() !== c.code || d.name.trim() !== c.name || d.otherId.trim() !== (c.otherId || "");
+    var h = '<div class="card" style="' + (changed ? "border-left:3px solid var(--warning)" : "") + '"><div class="ch">' + thumb;
+    h += '<div class="ci" style="width:100%">';
+    h += '<div class="field" style="margin-bottom:6px"><label>Code</label>';
+    h += '<input type="text" value="' + esc(d.code) + '" data-cr-ren="code" data-cr-cid="' + esc(c.id) + '" style="font-weight:700;font-size:14px;' + (e.code ? "border-color:var(--danger)" : "") + '"/>';
+    if (e.code) h += '<div class="err">' + esc(e.code) + '</div>';
+    h += '</div>';
+    h += '<div class="field" style="margin-bottom:6px"><label>Name</label>';
+    h += '<input type="text" value="' + esc(d.name) + '" data-cr-ren="name" data-cr-cid="' + esc(c.id) + '" style="font-size:12px;' + (e.name ? "border-color:var(--danger)" : "") + '"/>';
+    if (e.name) h += '<div class="err">' + esc(e.name) + '</div>';
+    h += '</div>';
+    h += '<div class="field" style="margin-bottom:0"><label>Other ID</label>';
+    h += '<input type="text" value="' + esc(d.otherId) + '" data-cr-ren="other" data-cr-cid="' + esc(c.id) + '" style="font-size:12px;' + (e.otherId ? "border-color:var(--danger)" : "") + '" placeholder="optional"/>';
+    if (e.otherId) h += '<div class="err">' + esc(e.otherId) + '</div>';
+    h += '</div></div></div></div>';
+    return h;
+  }
+
+  function deleteConfirmHTML() {
+    var c = fc(S.pendingDeleteId);
+    if (!c) return "";
+    var h = '<div class="mo">';
+    h += '<div class="mdl">';
+    h += '<h2>Delete compound?</h2>';
+    h += '<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5">';
+    h += 'Remove <strong>' + esc(c.code) + '</strong> from the dictionary and delete its ChemRef references in the document. This cannot be undone.</p>';
+    h += '<div class="mda">';
+    h += '<button type="button" class="bo" data-cr="delcancel">Cancel</button>';
+    h += '<button type="button" class="bd" data-cr="delconfirm">Delete</button>';
+    h += '</div></div></div>';
+    return h;
+  }
+
+  function flattenConfirmHTML() {
+    var step = S.pendingFlattenStep;
+    if (step !== 1 && step !== 2) return "";
+    var h = '<div class="mo">';
+    h += '<div class="mdl">';
+    if (step === 1) {
+      h += '<h2>Flatten for manuscript submission</h2>';
+      h += '<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5">';
+      h += 'Remove all ChemRef compound data from this document and unwrap ChemRef references to plain text. Save a working copy first if you might need the tracked references later.</p>';
+      h += '<div class="mda">';
+      h += '<button type="button" class="bo" data-cr="flattencancel">Cancel</button>';
+      h += '<button type="button" class="bp" data-cr="flattencont">Continue</button>';
+    } else {
+      h += '<h2>Are you sure?</h2>';
+      h += '<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5">This cannot be undone.</p>';
+      h += '<div class="mda">';
+      h += '<button type="button" class="bo" data-cr="flattencancel">Cancel</button>';
+      h += '<button type="button" class="bd" data-cr="flattendo" style="line-height:1.25;white-space:normal;padding:8px 10px">Flatten for manuscript submission</button>';
+    }
+    h += '</div></div></div>';
+    return h;
+  }
+
+  function modalHTML() {
+    var c = fc(S.insertTarget);
+    if (!c) return "";
+    var hasO = c.otherId && c.otherId.trim();
+    var h = '<div class="mo">';
+    h += '<div class="mdl">';
+    h += '<h2>Insert: ' + esc(c.code) + '</h2>';
+    h += '<p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Choose what to insert.</p>';
+    h += '<div class="io">';
+    h += '<div class="iop" data-cr="doins" data-cid="' + esc(c.id) + '" data-type="code"><div><div class="iol">Code</div><div class="iov">' + esc(c.code) + '</div></div></div>';
+    h += '<div class="iop" data-cr="doins" data-cid="' + esc(c.id) + '" data-type="name"><div><div class="iol">IUPAC Name</div><div class="iov">' + esc(c.name) + '</div></div></div>';
+    if (hasO) {
+      h += '<div class="iop" data-cr="doins" data-cid="' + esc(c.id) + '" data-type="otherId"><div><div class="iol">Other ID</div><div class="iov">' + esc(c.otherId) + '</div></div></div>';
+    }
+    h += '</div>';
+    h += '<div class="mda"><button type="button" class="bo" data-cr="closemod">Cancel</button></div>';
+    h += '</div></div>';
+    return h;
+  }
+
+  function formHTML() {
+    var d = S.formDraft, e = S.formErrors, isE = !!S.editingId;
+    var h = '<h2>' + (isE ? "Edit Compound" : "New Compound") + '</h2>';
+    h += '<div class="field"><label>Structure Image</label>';
+    if (d.imageDataUrl) {
+      h += '<div class="uz" id="imageUploadZone">';
+      h += '<img src="' + d.imageDataUrl + '"/>';
+      h += '<div class="hlp">Click to focus, then Ctrl+V — or double-click to browse files</div></div>';
+    } else {
+      h += '<div class="uz" id="imageUploadZone">';
+      h += '<div style="font-size:28px;color:var(--text-muted)">\uD83D\uDDBC\uFE0F</div>';
+      h += '<div style="font-size:12px;color:var(--text-muted);margin-top:4px">Click to focus, then Ctrl+V — drag an image, or double-click to browse</div></div>';
+    }
+    h += '<input type="file" id="imageFileInput" accept="image/*" style="display:none"/></div>';
+    h += '<div class="field"><label>Compound Code</label>';
+    h += '<input type="text" id="codeInput" placeholder="e.g. 1a" value="' + esc(d.code) + '"/>';
+    h += (e.code ? '<div class="err">' + esc(e.code) + '</div>' : '<div class="hlp">Unique short reference</div>');
+    h += '</div>';
+    h += '<div class="field"><label>IUPAC Name</label>';
+    h += '<textarea id="nameInput" rows="2" placeholder="e.g. (2R)-2-amino-3-phenylpropanoic acid">' + esc(d.name) + '</textarea>';
+    if (e.name) h += '<div class="err">' + esc(e.name) + '</div>';
+    h += '</div>';
+    h += '<div class="field"><label>Other Identifier (optional)</label>';
+    h += '<input type="text" id="otherIdInput" placeholder="e.g. CAS number" value="' + esc(d.otherId || "") + '"/>';
+    h += (e.otherId ? '<div class="err">' + esc(e.otherId) + '</div>' : '<div class="hlp">Can match own code</div>');
+    h += '</div>';
+    h += '<div class="field"><label>Structure Files (optional)</label><div style="margin-bottom:6px">';
+    if (d.attachments && d.attachments.length > 0) {
+      d.attachments.forEach(function (a, i) {
+        h += '<span class="fc">\uD83D\uDCCE ' + esc(a.name) + ' <span class="rm" data-cr="rmattach" data-idx="' + i + '">\u00D7</span></span> ';
+      });
+    }
+    h += '</div>';
+    h += '<button type="button" class="bo bs" data-cr="attach">\uFF0B Attach .cdx/.mol/.sdf</button>';
+    h += '<input type="file" id="attachFileInput" accept=".cdx,.mol,.sdf,.mol2,.cml,.rxn,.rdf,.smiles,.smi,.inchi" style="display:none" multiple/>';
+    h += '<div class="hlp">For verification</div></div>';
+    h += '<div style="display:flex;gap:8px;margin-top:16px">';
+    h += '<button type="button" class="bp bw" data-cr="save">' + (isE ? "Save Changes" : "Add Compound") + '</button>';
+    h += '<button type="button" class="bo" data-cr="cancel">Cancel</button></div>';
+    return h;
+  }
+
+  function consHTML() {
+    var r = S.consistencyResults || [];
+    var h = '<h2>Consistency Check</h2>';
+    if (!r.length) {
+      h += '<div class="es"><div class="ei">\u2705</div><p>All consistent!</p></div>';
+      h += '<button type="button" class="bo bw" data-cr="consistency">Run Again</button>';
+      return h;
+    }
+    h += '<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px"><strong>' + r.length + '</strong> mismatch(es).</p>';
+    if (r.some(function (m) { return !m.orphaned; })) {
+      h += '<div style="font-size:11px;color:var(--text-muted);line-height:1.45;margin-bottom:12px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)">';
+      h += '<strong>Pull</strong> (\u2190) copies the text from the document into your ChemRef dictionary for that compound, so the dictionary matches the manuscript. ';
+      h += '<strong>Push</strong> (\u2192) overwrites the reference in the document with the dictionary value. ';
+      h += 'Use Pull when the document is right; use Push when the dictionary is right.</div>';
+    }
+    var no = r.filter(function (m) { return !m.orphaned; });
+    if (no.length > 1) {
+      h += '<div style="margin-bottom:12px"><button type="button" class="bp bs" data-cr="pushall">Push All (' + no.length + ')</button></div>';
+    }
+    r.forEach(function (m, i) {
+      if (m.orphaned) {
+        h += '<div class="mc orp">';
+        h += '<div style="font-weight:600;font-size:12px;color:#92400e;margin-bottom:4px">\u26A0 Orphaned</div>';
+        h += '<div style="font-size:12px;margin-bottom:4px">"<span class="mv ma">' + esc(m.actual) + '</span>"</div>';
+        h += '<button type="button" class="bo bs" data-cr="rmorphan" data-idx="' + i + '">\u2192 Plain Text</button></div>';
+      } else {
+        h += '<div class="mc">';
+        h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">';
+        h += '<span style="font-weight:700;color:var(--primary);font-size:13px">' + esc(m.compoundCode) + '</span>';
+        h += '<span style="font-size:11px;color:var(--text-muted)">\u00B7 ' + m.type + '</span></div>';
+        h += '<div style="margin-bottom:8px"><div class="ml">Dictionary</div><div class="mv me">' + esc(m.expected) + '</div></div>';
+        h += '<div style="margin-bottom:8px"><div class="ml">Document</div><div class="mv ma">' + esc(m.actual) + '</div></div>';
+        h += '<div style="display:flex;gap:6px">';
+        h += '<button type="button" class="bo bs" data-cr="pullref" data-idx="' + i + '">\u2190 Pull</button>';
+        h += '<button type="button" class="bp bs" data-cr="pushref" data-idx="' + i + '">Push \u2192</button></div></div>';
+      }
+    });
+    h += '<hr class="divider"/><button type="button" class="bo bw" data-cr="consistency">Run Again</button>';
+    return h;
+  }
+
+  function ulHTML() {
+    var r = S.unlinkedResults || [];
+    var h = '<h2>Unlinked References</h2>';
+    if (!r.length) {
+      h += '<div class="es"><div class="ei">\u2705</div><p>All tracked!</p></div>';
+      h += '<button type="button" class="bo bw" data-cr="scanul">Scan Again</button>';
+      return h;
+    }
+    h += '<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px"><strong>' + r.length + '</strong> unlinked.</p>';
+    r.forEach(function (u, i) {
+      h += '<div class="card">';
+      h += '<div style="margin-bottom:6px"><span style="font-weight:700;color:var(--primary);font-size:13px">"' + esc(u.text) + '"</span> ';
+      h += '<span style="font-size:11px;color:var(--text-muted)">\u2192 ' + esc(u.compoundCode) + ' (' + u.type + ')</span></div>';
+      h += '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Not tracked.</div>';
+      h += '<div style="display:flex;gap:4px;flex-wrap:wrap">';
+      h += '<button type="button" class="bp bs" data-cr="linkmatch" data-idx="' + i + '">Link as ' + esc(u.type) + '</button>';
+      if (u.type === "code") h += '<button type="button" class="bo bs" data-cr="linkname" data-idx="' + i + '">as Name</button>';
+      else h += '<button type="button" class="bo bs" data-cr="linkcode" data-idx="' + i + '">as Code</button>';
+      h += '<button type="button" class="bo bs" data-cr="ignoreul" data-idx="' + i + '">Ignore</button></div></div>';
+    });
+    h += '<hr class="divider"/><button type="button" class="bo bw" data-cr="scanul">Scan Again</button>';
+    return h;
+  }
+
+  function infoHTML() {
+    var h = '<div class="ip"><div class="im"><strong>ChemRef</strong> v1.0.0<br/>';
+    h += 'Developed by Jinlong Tan<br/>';
+    h += 'Built with Claude (Opus 4.6) by Anthropic<br/>';
+    h += 'Cursor (Composer 2)<br/>';
+    h += '<a href="https://chemref.azurestaticapps.net/support.html" target="_blank">Support \u2192</a></div>';
+    h += '<div class="isn"><h3>Adding compounds</h3><p>Structure image: click the image area to focus it, then paste (Ctrl+V) from a screenshot, drag a file, or double-click to browse. Enter code, name, optionally Other ID and file attachments.</p></div>';
+    h += '<div class="isn"><h3>Inserting references</h3><p>Place cursor, click Insert, choose code/name/Other ID. Auto-updates on edit.</p></div>';
+    h += '<div class="isn"><h3>Renumbering</h3><p>Click Renumber to edit all freely. Validated on apply.</p></div>';
+    h += '<div class="isn"><h3>Consistency</h3><p>Auto-checks on load. Pull or push mismatches.</p></div>';
+    h += '<div class="isn"><h3>Unlinked scan</h3><p>Finds matching text not tracked by ChemRef.</p></div>';
+    h += '<div class="isn"><h3>Collaborators</h3><p>Data stored in .docx. Without ChemRef, refs show as normal text.</p></div></div>';
+    return h;
+  }
+
+  /* ── Initial render ── */
+  (function attachAppEvents() {
+    var el = document.getElementById("app");
+    if (!el) return;
+    el.addEventListener("click", onAppClick);
+    el.addEventListener("change", onAppChange);
+    el.addEventListener("input", onAppInput);
+    el.addEventListener("keydown", onAppKeydown);
+  })();
+  render();
+})();
+</script>
+</body>
+</html>

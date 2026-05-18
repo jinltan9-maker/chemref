@@ -141,6 +141,14 @@
 var CR = {};
 
 (function () {
+  /*
+   * Dictionary storage (document-bound, not on the web server):
+   * - Primary: Office.context.document.settings key "chemref_compounds" (JSON array string).
+   * - Legacy: custom XML part namespace CUSTOM_XML_NS; older docs may load only from XML, then migrate via saveDoc().
+   * - Content controls in the body reference compounds by id/tag; changing id/tag schemes breaks existing refs.
+   * Do not rename keys, change JSON shape, or alter load/save/parse paths without a deliberate migration strategy.
+   * GPT / future editors: treat the block below (Persistence) as high-risk; prefer new features elsewhere.
+   */
   var CUSTOM_XML_NS = "urn:chemref:compound-dictionary:v1";
   var CC_TAG_PREFIX = "CHEMREF_";
 
@@ -197,8 +205,9 @@ var CR = {};
     }
   });
 
-  /* ── Persistence ── */
+  /* ── Persistence (dictionary load / save) — see file-top contract; edit with extreme care ── */
   function loadFromDoc() {
+    /* Reads user dictionary from the .docx only. Order: settings first, then legacy XML + migrate to settings. */
     return new Promise(function (res) {
       try {
         var json = Office.context.document.settings.get("chemref_compounds");
@@ -221,7 +230,7 @@ var CR = {};
               var parsed = parseXml(xml.value);
               if (parsed && parsed.length > 0) {
                 S.compounds = parsed;
-                return saveDoc();
+                return saveDoc(); /* one-time migration: legacy XML -> settings */
               }
             });
           }
@@ -231,6 +240,7 @@ var CR = {};
   }
 
   function saveDoc() {
+    /* Writes S.compounds to settings under "chemref_compounds". Called after edits; do not clear except Flatten / explicit flows. */
     return new Promise(function (res) {
       try {
         var settings = Office.context.document.settings;
@@ -243,6 +253,7 @@ var CR = {};
     });
   }
 
+  /* Legacy custom XML only: <data>...</data> wraps JSON (entity-decoded). Must stay compatible with old documents. */
   function parseXml(x) {
     try {
       var m = x.match(/<data>([\s\S]*?)<\/data>/);
@@ -782,7 +793,10 @@ var CR = {};
     }).catch(function () { toast("Failed.", "error"); });
   }
 
-  /* ── Flatten (confirm via in-pane steps — window.confirm is unreliable in Office task panes) ── */
+  /*
+   * Flatten — only user-confirmed path that intentionally wipes dictionary persistence (XML + chemref_compounds).
+   * Do not call this pattern from "cleanup" or init; accidental dictionary deletion lives here if misused.
+   */
   function executeFlatten() {
     var cnt = 0;
     Word.run(function (ctx) {
@@ -803,7 +817,7 @@ var CR = {};
         }
         return ctx.sync();
       }).then(function () {
-        /* Only ChemRef's dictionary XML; settings key chemref_compounds is separate below. */
+        /* Intentional: remove legacy dictionary XML (same namespace as loadFromDoc fallback). */
         var xmlParts = ctx.document.customXmlParts.getByNamespace(CUSTOM_XML_NS);
         ctx.load(xmlParts);
         return ctx.sync().then(function () {
@@ -815,6 +829,7 @@ var CR = {};
       });
     }).then(function () {
       try {
+        /* Intentional: remove primary dictionary store (must match loadFromDoc / saveDoc key). */
         var settings = Office.context.document.settings;
         settings.remove("chemref_compounds");
         return new Promise(function (r) { settings.saveAsync(function () { r(); }); });
@@ -1677,7 +1692,7 @@ var CR = {};
     h += 'Developed by Jinlong Tan<br/>';
     h += 'Built with Claude (Opus 4.6) by Anthropic<br/>';
     h += 'Cursor (Composer 2)<br/>';
-    h += '<a href="https://chemref.azurestaticapps.net/support.html" target="_blank">Support \u2192</a></div>';
+    h += '<a href="https://jinltan9-maker.github.io/chemref/support.html" target="_blank">Support \u2192</a></div>';
     h += '<div class="isn"><h3>Adding compounds</h3><p>Structure image: click the image area to focus it, then paste (Ctrl+V) from a screenshot, drag a file, or double-click to browse. Enter code, name, optionally Other ID and file attachments.</p></div>';
     h += '<div class="isn"><h3>Inserting references</h3><p>Place cursor, click Insert, choose code/name/Other ID. Auto-updates on edit.</p></div>';
     h += '<div class="isn"><h3>Renumbering</h3><p>Click Renumber to edit all freely. Validated on apply.</p></div>';
